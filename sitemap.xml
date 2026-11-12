@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://360qualitysolutions.co.za/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <image:image><image:loc>https://360qualitysolutions.co.za/assets/images/hero-quality-inspection.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://360qualitysolutions.co.za/services/iso-implementation/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <image:image><image:loc>https://360qualitysolutions.co.za/assets/images/iso-implementation.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://360qualitysolutions.co.za/services/iso-gap-analysis/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <image:image><image:loc>https://360qualitysolutions.co.za/assets/images/iso-gap-analysis.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://360qualitysolutions.co.za/services/sheq-internal-audits/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <image:image><image:loc>https://360qualitysolutions.co.za/assets/images/sheq-internal-audits.webp</image:loc></image:image>
+  </url>
+  <url>
+    <loc>https://360qualitysolutions.co.za/services/statistical-analysis/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <image:image><image:loc>https://360qualitysolutions.co.za/assets/images/statistical-analysis.webp</image:loc></image:image>
+  </url>
+</urlset>
