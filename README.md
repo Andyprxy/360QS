@@ -49,7 +49,7 @@ After redirects work, use Search Console's **Change of Address** for the domain 
 
 Services include ISO management systems, gap analysis, internal auditing, statistical analysis and RTMS support. The agency provides **consulting and readiness support only**; independent bodies perform certification. The office is listed in contact details for clients, but the site does not describe service coverage as limited to one city.
 
-Business email: `shibeRR@gmail.com`. Contact phone as provided: `+27 76 286 939` (verify length before publication). Hours: Monday–Saturday 09:00–18:00; Sunday closed.
+Business email: `info@360qualitysolutions.co.za`. Confirmed contact phone: `+27 76 286 9391`. Hours: Monday–Saturday 09:00–18:00; Sunday closed.
 
 ## Admin note
 
@@ -58,3 +58,20 @@ Business email: `shibeRR@gmail.com`. Contact phone as provided: `+27 76 286 939`
 ## Technical
 
 Built with accessible HTML, CSS, JavaScript, original illustrations, JSON-LD structured data, Open Graph / Twitter metadata, responsive images, canonical links and XML sitemap. No deceptive keyword stuffing or ranking guarantees. The enquiry form opens an email draft (it does not submit to a backend).
+
+
+## November 2026 refinement
+
+- Official contact: info@360qualitysolutions.co.za, +27 76 286 9391.
+- The four service pages now use compact desktop editorial layouts: descriptions left, technical diagrams right. Statistical control charts sit beside the explanatory content.
+- Invoice banking details have been populated from the supplied business payment instructions. They appear on invoices (live A4 preview and PDF exports), not on quotations. Settings remain editable.
+- Existing SEO titles, descriptions, canonicals, business schema, sitemap, robots directives, and favicon assets are preserved. Contact schema was updated, structured Service contact channels were added, and sitemap lastmod values reflect the revision.
+- Revisit Google Search Console to request indexing of relevant pages and monitor real queries and impressions. Search ranking is not guaranteed by metadata alone.
+
+## Search launch checks
+
+1. Confirm `https://360qualitysolutions.co.za/` is the canonical working domain (including SSL, www redirection, and GitHub Pages settings).
+2. Verify the site in Google Search Console and submit `https://360qualitysolutions.co.za/sitemap.xml`; inspect and request indexing for the four service pages.
+3. Ensure the Google Business Profile, website footer and other directory citations use the same updated email and phone.
+4. Check Google Search Console queries, indexing, Core Web Vitals and incoming enquiries over time, and improve content based on evidence. SEO cannot guarantee a first-place ranking.
+5. Keep `favicon.ico` and `/assets/images/favicon-48.png` reachable; Google Search may take days or weeks to reflect updated favicons.
