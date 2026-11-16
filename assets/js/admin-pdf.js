@@ -96,40 +96,52 @@
     page.text(`360 Quality Solutions  /  ${pageIndex} OF ${totalPages}`,551,818,7.1,BLUE,true,'right');
   }
   function noteSummary(page,d,hasExtra){
-    const termsTitle=d.type==='invoice'?'PAYMENT TERMS':'QUOTATION TERMS';
-    page.text(termsTitle,43,598,8,BLUE,true);
+    const inv=d.type==='invoice';
+    page.text(inv?'PAYMENT TERMS':'QUOTATION TERMS',43,598,8,BLUE,true);
     if(hasExtra){
       page.text('Full terms and thank-you message continue',43,616,8.4,MUTED);
       page.text('on the final page of this document.',43,629,8.4,MUTED);
       return;
     }
+    const maxLines=inv?2:4;
     const terms=wrap(d.terms||'No additional terms supplied.',245,8.5);
-    page.block(terms,43,615,245,8.5,12,MUTED,false,4);
-    const messageY=Math.max(675,615+Math.min(terms.length,4)*12+14);
+    page.block(terms,43,615,245,8.5,12,MUTED,false,maxLines);
+    const messageY=inv?657:Math.max(675,615+Math.min(terms.length,4)*12+14);
     page.text('THANK-YOU MESSAGE',43,messageY,8,BLUE,true);
-    const thankYou=d.notes||'Thank you for considering 360 Quality Solutions.';
-    page.block(wrap(thankYou,245,8.5),43,messageY+16,245,8.5,12,MUTED,false,4);
+    page.block(wrap(d.notes||'Thank you for considering 360 Quality Solutions.',245,8.5),43,messageY+16,245,8.5,12,MUTED,false,maxLines);
+  }
+  function drawBankDetails(page,b){
+    // Four distinct labelled fields arranged on two rows, without clipping.
+    page.line(43,703,552,703,BORDER,.7);
+    page.text('PAYMENT INFORMATION',43,715,8,BLUE,true);
+    const fields=[
+      {label:'BANK',value:b.bankName||'Provided on request',x:43},
+      {label:'ACCOUNT NUMBER',value:b.accountNumber||'Provided on request',x:308},
+      {label:'ACCOUNT HOLDER',value:b.accountName||'Provided on request',x:43},
+      {label:'BRANCH CODE',value:b.branchCode||'Provided on request',x:308}
+    ];
+    fields.forEach((field,i)=>{
+      const row=i<2?0:1;
+      const y=row?761:732;
+      page.text(field.label,field.x,y,7.2,BLUE,true);
+      const valueLines=wrap(field.value,field.x===43?235:237,9.4,true);
+      page.text(valueLines[0]||'',field.x,y+14,9.4,DARK,true);
+    });
   }
   function details(page,d,b,summary,hasExtra){
+    const invoice=d.type==='invoice';
     noteSummary(page,d,hasExtra);
-    page.rect(332,589,220,139,LIGHT);page.outline(332,589,220,139,BORDER);
+    const yTop=invoice?558:589;
+    page.rect(332,yTop,220,139,LIGHT);page.outline(332,yTop,220,139,BORDER);
     const rows=[['Subtotal',rawMoney(summary.subtotal)]];
     if(Number(d.discountRate)>0)rows.push([`Discount (${d.discountRate}%)`,'-'+rawMoney(summary.discount)]);
     if(Number(d.taxRate)>0)rows.push([`VAT (${d.taxRate}%)`,rawMoney(summary.tax)]);
-    rows.forEach(([name,value],i)=>{const yy=610+i*21;page.text(name,345,yy,9,MUTED);page.text(value,537,yy,9,DARK,true,'right');});
-    page.line(345,685,539,685,BORDER,.8);
-    page.text(d.type==='invoice'?'TOTAL DUE':'TOTAL QUOTED',345,707,8,BLUE,true);
-    page.text(rawMoney(summary.total),537,707,18,NAVY,true,'right');
-    if(d.type==='invoice'){
-      const bankParts=[];if(b.bankName)bankParts.push(`Bank: ${b.bankName}`);if(b.accountName)bankParts.push(`Account: ${b.accountName}`);
-      if(b.accountNumber)bankParts.push(`Number: ${b.accountNumber}`);if(b.branchCode)bankParts.push(`Branch: ${b.branchCode}`);
-      const bank=bankParts.length?bankParts.join('  |  '):'Banking details supplied on request.';
-      page.text('PAYMENT INFORMATION',43,747,7.5,BLUE,true);
-      page.text(wrap(bank,495,8)[0],43,763,8,MUTED);
-    }else{
-      page.text('ACCEPTED BY CLIENT',43,747,7.5,BLUE,true);
-      page.line(155,756,340,756,BORDER,.8);page.text('Signature / date',347,758,8,MUTED);
-    }
+    rows.forEach(([name,value],i)=>{const yy=yTop+21+i*21;page.text(name,345,yy,9,MUTED);page.text(value,537,yy,9,DARK,true,'right');});
+    page.line(345,yTop+96,539,yTop+96,BORDER,.8);
+    page.text(invoice?'TOTAL DUE':'TOTAL QUOTED',345,yTop+118,8,BLUE,true);
+    page.text(rawMoney(summary.total),537,yTop+135,18,NAVY,true,'right');
+    if(invoice) drawBankDetails(page,b);
+    else {page.text('ACCEPTED BY CLIENT',43,747,7.5,BLUE,true);page.line(155,756,340,756,BORDER,.8);page.text('Signature / date',347,758,8,MUTED);}
   }
   function appendOverflowPages(pages,d,b) {
     const sections=[
@@ -161,10 +173,10 @@
       return {i,desc,extra,height:Math.max(39,18+desc.length*13+extra.length*11)};
     });
     const chunks=[];let chunk=[],y=0;
-    for(const row of rows){const maxH=chunks.length===0?225:335;if(chunk.length&&y+row.height>maxH){chunks.push(chunk);chunk=[];y=0;}chunk.push(row);y+=row.height;}
+    for(const row of rows){const maxH=chunks.length===0?225:(d.type==='invoice'?300:335);if(chunk.length&&y+row.height>maxH){chunks.push(chunk);chunk=[];y=0;}chunk.push(row);y+=row.height;}
     if(chunk.length)chunks.push(chunk);
     const noteLines=wrap(d.notes||'',240,8.5).length;const termLines=wrap(d.terms||'',240,8.5).length;
-    const hasExtra=noteLines>4||termLines>4;
+    const hasExtra=d.type==='invoice'?(noteLines>2||termLines>2):(noteLines>4||termLines>4);
     const pages=[];
     for(let k=0;k<chunks.length;k++){
       const page=new Page();const first=k===0;

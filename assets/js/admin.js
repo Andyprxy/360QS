@@ -7,9 +7,9 @@
   const KEY_DOCS = '360qs_documents_v1';
   const KEY_BUSINESS = '360qs_business_v1';
   const DEFAULT_BUSINESS = Object.freeze({
-    businessName:'360 Quality Solutions', businessEmail:'shibeRR@gmail.com',
-    businessPhone:'+27 76 286 939', businessAddress:'Ditsela Place, Jan Shoba Street\nHatfield, 0028',
-    vatNumber:'', bankName:'', accountName:'', accountNumber:'', branchCode:''
+    businessName:'360 Quality Solutions', businessEmail:'info@360qualitysolutions.co.za',
+    businessPhone:'+27 76 286 9391', businessAddress:'Ditsela Place, Jan Shoba Street\nHatfield, 0028',
+    vatNumber:'', bankName:'First National Bank', accountName:'360 Quality Solutions', accountNumber:'63169355914', branchCode:'250655'
   });
   const labels = { dashboard:'Overview',invoice:'Invoices',quote:'Quotations',documents:'Saved documents',settings:'Business settings' };
   const el = id => document.getElementById(id);
@@ -24,7 +24,15 @@
   const zar = n => 'R '+(Number(n) || 0).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2});
   function readJSON(key, fallback) { try {const s=localStorage.getItem(key); const v=s?JSON.parse(s):fallback; return v ?? fallback;} catch {return fallback;} }
   function writeJSON(key, value) {try {localStorage.setItem(key,JSON.stringify(value)); return true;} catch {toast('Unable to save: browser storage is unavailable or full. Download your PDF for a copy.');return false;}}
-  let business = {...DEFAULT_BUSINESS,...readJSON(KEY_BUSINESS,{})};
+  // Preserve user-customised settings while correcting obsolete defaults and populating
+  // the confirmed banking fields for browsers that saved the earlier empty template.
+  const storedBusiness = readJSON(KEY_BUSINESS,{});
+  let business = {...DEFAULT_BUSINESS,...storedBusiness};
+  if (!storedBusiness.businessEmail || /^shiberr@gmail\.com$/i.test(storedBusiness.businessEmail)) business.businessEmail=DEFAULT_BUSINESS.businessEmail;
+  if (!storedBusiness.businessPhone || storedBusiness.businessPhone.replace(/\s/g,'')==='+2776286939') business.businessPhone=DEFAULT_BUSINESS.businessPhone;
+  for (const field of ['bankName','accountName','accountNumber','branchCode']) {
+    if (!String(storedBusiness[field]||'').trim()) business[field]=DEFAULT_BUSINESS[field];
+  }
   let savedDocs = readJSON(KEY_DOCS,[]);
   if (!Array.isArray(savedDocs)) savedDocs=[];
   savedDocs = savedDocs.filter(x=>x && (x.type==='invoice'||x.type==='quote'));
@@ -40,7 +48,7 @@
     return {id:null,type,number:nextNumber(type),status:'draft',issueDate,dueDate:shiftDate(issueDate,type==='invoice'?14:30),
       clientName:'',clientContact:'',clientEmail:'',clientAddress:'',reference:'',
       items:[{description:'Professional consulting services',detail:'',qty:1,rate:0}],discountRate:0,taxRate:0,
-      notes:type==='invoice'?'Thank you for choosing 360 Quality Solutions. We appreciate your business and the opportunity to support your organisation.':'Thank you for considering 360 Quality Solutions. We appreciate the opportunity to prepare this quotation and look forward to working with you.',terms:type==='invoice'?'Payment is due by the date stated on this invoice. Please reference the invoice number when making payment.':'This quotation is valid until the date indicated. Scope changes may require a revised quotation.'};
+      notes:type==='invoice'?'Thank you for choosing 360 Quality Solutions. We appreciate your business.':'Thank you for considering 360 Quality Solutions. We appreciate the opportunity to prepare this quotation and look forward to working with you.',terms:type==='invoice'?'Payment is due by the stated date. Use the invoice number as your payment reference.':'This quotation is valid until the date indicated. Scope changes may require a revised quotation.'};
   }
   function current() {if(!drafts[activeType]) drafts[activeType]=makeDoc(activeType);return drafts[activeType];}
   function totals(doc) {const items = Array.isArray(doc.items)?doc.items:[]; const subtotalC=items.reduce((sum,i)=>sum+Math.round((Number(i.qty)||0)*(Number(i.rate)||0)*100),0); const discountC=Math.round(subtotalC*Math.max(0,Math.min(100,Number(doc.discountRate)||0))/100); const taxableC=Math.max(0,subtotalC-discountC); const taxC=Math.round(taxableC*Math.max(0,Math.min(100,Number(doc.taxRate)||0))/100);return {subtotal:subtotalC/100,discount:discountC/100,tax:taxC/100,total:(taxableC+taxC)/100};}
@@ -92,8 +100,10 @@
     setText('preview-footer-address',String(business.businessAddress||'').replace(/\n/g,' · '));
     setText('preview-footer-contact',[business.businessEmail,business.businessPhone].filter(Boolean).join(' · '));
     el('preview-payments').classList.toggle('hidden',!inv);el('preview-acceptance').classList.toggle('hidden',inv);
-    const bank = [[business.bankName,'Bank'],[business.accountName,'Account name'],[business.accountNumber,'Account no.'],[business.branchCode,'Branch code']].filter(([v])=>cleanText(v));
-    setText('preview-bank-details',bank.length?bank.map(([value,label])=>`${label}: ${value}`).join('  ·  '):'Banking details provided on request.');
+    const bank = [[business.bankName,'Bank'],[business.accountNumber,'Account number'],[business.accountName,'Account holder'],[business.branchCode,'Branch code']].filter(([v])=>cleanText(v));
+    el('preview-bank-details').innerHTML=bank.length
+      ? bank.map(([value,label])=>`<div class="bank-detail-row"><span>${safe(label)}</span><strong>${safe(value)}</strong></div>`).join('')
+      : '<span>Banking details provided on request.</span>';
     // Update live logo wordmark/business identity without altering artwork.
     const docBrand=$('.doc-brand strong');docBrand.textContent=String(business.businessName||'360 QUALITY SOLUTIONS').toUpperCase();
     $('.doc-brand span').textContent='QUALITY SOLUTIONS';

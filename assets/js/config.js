@@ -4,6 +4,6 @@
  * are transmitted to or stored by this static website.
  */
 window.SITE_CONFIG = Object.freeze({
-  contactEmail: 'shibeRR@gmail.com',
+  contactEmail: 'info@360qualitysolutions.co.za',
   companyName: '360 Quality Solutions'
 });
