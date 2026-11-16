@@ -21,14 +21,14 @@ PDF files use a self-contained PDF generator in `assets/js/admin-pdf.js`. They a
 - **Prepare client email** opens the device's default email application with subject/body. **Attach the downloaded PDF manually**; this workspace does not send messages or attach files automatically.
 - New document numbers are suggested from the documents saved in *that browser*; they are **not globally unique** across staff or devices. Verify numbering before issuing to clients.
 - VAT is **off by default**. Enter a VAT rate only if the company is registered and entitled to charge it; also enter the registration number where appropriate.
-- Banking details are intentionally blank. Do not enter invented payment information.
+- The invoice template is prefilled with the client-supplied First National Bank account information. Bank, account holder, account number and branch code remain editable in Business settings; verify them before issuing any invoice. Quotations do not display bank details.
 
 ## Company details configured from the provided brief
 
 - **Name:** 360 Quality Solutions
 - **Address:** Ditsela Place, Jan Shoba Street, Hatfield, Pretoria, 0028
-- **Email:** shibeRR@gmail.com
-- **Phone:** +27 76 286 939 — please verify; this appears shorter than the usual SA mobile format
+- **Email:** info@360qualitysolutions.co.za
+- **Phone:** +27 76 286 9391
 - **Public-site hours:** Monday–Saturday 09:00–18:00; Sunday closed
 
 ## Security — read before live client use
